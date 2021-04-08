@@ -1,5 +1,5 @@
 {
-    "name": "mjacques3/passport",
+    "name": "mjacques3/passport-test",
     "description": "Laravel Passport provides OAuth2 server support to Laravel. for air",
     "keywords": ["laravel", "passport", "oauth", "air"],
     "license": "MIT",
