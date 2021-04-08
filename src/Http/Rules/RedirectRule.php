@@ -2,24 +2,16 @@
 
 namespace Laravel\Passport\Http\Rules;
 
-use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\Factory;
 
 class RedirectRule implements Rule
 {
     /**
-     * The validator instance.
-     *
      * @var \Illuminate\Contracts\Validation\Factory
      */
-    protected $validator;
+    private $validator;
 
-    /**
-     * Create a new rule instance.
-     *
-     * @param  \Illuminate\Contracts\Validation\Factory  $validator
-     * @return void
-     */
     public function __construct(Factory $validator)
     {
         $this->validator = $validator;

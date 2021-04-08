@@ -2,11 +2,9 @@
 
 namespace Laravel\Passport\Console;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
+use phpseclib\Crypt\RSA;
 use Laravel\Passport\Passport;
-use phpseclib\Crypt\RSA as LegacyRSA;
-use phpseclib3\Crypt\RSA;
+use Illuminate\Console\Command;
 
 class KeysCommand extends Command
 {
@@ -29,11 +27,14 @@ class KeysCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  \phpseclib\Crypt\RSA  $rsa
      * @return void
      */
-    public function handle()
+    public function handle(RSA $rsa)
     {
-        [$publicKey, $privateKey] = [
+        $keys = $rsa->createKey($this->input ? (int) $this->option('length') : 4096);
+
+        list($publicKey, $privateKey) = [
             Passport::keyPath('oauth-public.key'),
             Passport::keyPath('oauth-private.key'),
         ];
@@ -41,17 +42,8 @@ class KeysCommand extends Command
         if ((file_exists($publicKey) || file_exists($privateKey)) && ! $this->option('force')) {
             $this->error('Encryption keys already exist. Use the --force option to overwrite them.');
         } else {
-            if (class_exists(LegacyRSA::class)) {
-                $keys = (new LegacyRSA)->createKey($this->input ? (int) $this->option('length') : 4096);
-
-                file_put_contents($publicKey, Arr::get($keys, 'publickey'));
-                file_put_contents($privateKey, Arr::get($keys, 'privatekey'));
-            } else {
-                $key = RSA::createKey($this->input ? (int) $this->option('length') : 4096);
-
-                file_put_contents($publicKey, (string) $key->getPublicKey());
-                file_put_contents($privateKey, (string) $key);
-            }
+            file_put_contents($publicKey, array_get($keys, 'publickey'));
+            file_put_contents($privateKey, array_get($keys, 'privatekey'));
 
             $this->info('Encryption keys generated successfully.');
         }

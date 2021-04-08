@@ -53,13 +53,6 @@ class AuthCode extends Model
     public $timestamps = false;
 
     /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
      * Get the client that owns the authentication code.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -67,15 +60,5 @@ class AuthCode extends Model
     public function client()
     {
         return $this->belongsTo(Passport::clientModel());
-    }
-
-    /**
-     * Get the current connection name for the model.
-     *
-     * @return string|null
-     */
-    public function getConnectionName()
-    {
-        return config('passport.storage.database.connection') ?? $this->connection;
     }
 }
